@@ -118,7 +118,7 @@ public class KohlchanModelMapper
 		String sub = CommonUtils.optJsonString(jsonObject, "subject");
 		post.setSubject(StringUtils.nullIfEmpty(StringUtils.clearHtml(sub).trim()));
 
-		post.setComment(linkify(CommonUtils.optJsonString(jsonObject, "markdown")));
+		post.setComment(linkify(fixnl(CommonUtils.optJsonString(jsonObject, "markdown"))));
 
 		JSONArray filesArray = jsonObject.optJSONArray("files");
 		if (filesArray != null)
@@ -191,5 +191,10 @@ public class KohlchanModelMapper
 				sb.append(text);
 		}
 		return sb.toString();
+	}
+
+	private static String fixnl(String html)
+	{
+		return html.replace("\n", "<br />");
 	}
 }
