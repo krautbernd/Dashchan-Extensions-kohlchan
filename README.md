@@ -24,8 +24,8 @@ Read the [project wiki](https://github.com/Mishiranu/Dashchan/wiki) for further 
 
 ### Packages List
 
-Client application: [Dashchan.apk](https://github.com/Mishiranu/Dashchan-Extensions/raw/master/update/package/Dashchan.apk).  
-Video player libraries: [DashchanWebm.apk](https://github.com/Mishiranu/Dashchan-Extensions/raw/master/update/package/DashchanWebm.apk).
+Client application: [Dashchan.apk](https://github.com/Mishiranu/Dashchan/releases).  
+Video player libraries: [DashchanWebm.apk](https://github.com/Mishiranu/Dashchan-Webm).
 
 ##### License
 
