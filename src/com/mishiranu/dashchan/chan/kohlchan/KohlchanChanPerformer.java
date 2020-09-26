@@ -31,53 +31,31 @@ public class KohlchanChanPerformer extends ChanPerformer
 		Uri uri = locator.buildPath(data.boardName, (data.isCatalog() ? "catalog"
 				: Integer.toString(data.pageNumber + 1 )) + ".json");
 		HttpResponse response = new HttpRequest(uri, data.holder, data).setValidator(data.validator).read();
-		JSONObject jsonObject = response.getJsonObject();
-		JSONArray jsonArray = response.getJsonArray();
-		if (jsonObject != null && data.pageNumber >= 0)
+		JSONObject jsonObject = null;
+		JSONArray jsonArray = null;
+		if (!data.isCatalog())
+			jsonObject = response.getJsonObject();
+		else
+			jsonArray = response.getJsonArray();
+		try
 		{
-			try
+			JSONArray threadsArray;
+			if (jsonObject != null)
+				threadsArray = jsonObject.getJSONArray("threads");
+			else
+				threadsArray = jsonArray;
+			ArrayList<Posts> threads = new ArrayList<>();
+			for (int i = 0; i < threadsArray.length(); i++)
 			{
-				JSONArray threadsArray = jsonObject.getJSONArray("threads");
-				Posts[] threads = new Posts[threadsArray.length()];
-				for (int i = 0; i < threads.length; i++)
-				{
-					threads[i] = KohlchanModelMapper.createThread(threadsArray.getJSONObject(i),
-							locator,false);
-				}
-				return new ReadThreadsResult(threads);
+				threads.add(KohlchanModelMapper.createThread(threadsArray.getJSONObject(i),
+						locator, data.isCatalog()));
 			}
-			catch (JSONException e)
-			{
-				throw new InvalidResponseException(e);
-			}
+			return new ReadThreadsResult(threads);
 		}
-		else if (jsonArray != null)
+		catch (JSONException e)
 		{
-			if (data.isCatalog())
-			{
-				try
-				{
-					if (jsonArray.length() == 1)
-					{
-						jsonObject = jsonArray.getJSONObject(0);
-						if (!jsonObject.has("threads")) return null;
-					}
-					ArrayList<Posts> threads = new ArrayList<>();
-					for (int i = 0; i < jsonArray.length(); i++)
-					{
-						threads.add(KohlchanModelMapper.createThread(jsonArray.getJSONObject(i),
-								locator, true));
-					}
-					return new ReadThreadsResult(threads);
-				}
-				catch (JSONException e)
-				{
-					throw new InvalidResponseException(e);
-				}
-			}
-			else if (jsonArray.length() == 0) return null;
+			throw new InvalidResponseException(e);
 		}
-		throw new InvalidResponseException();
 	}
 
 	@Override
