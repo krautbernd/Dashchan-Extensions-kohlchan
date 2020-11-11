@@ -46,12 +46,13 @@ public class KohlchanModelMapper
 	public static FileAttachment createFileAttachment(JSONObject jsonObject, KohlchanChanLocator locator) throws JSONException
 	{
 		FileAttachment attachment = new FileAttachment();
-		String originalName = CommonUtils.getJsonString(jsonObject, "originalName");
 		String thumbPath = CommonUtils.getJsonString(jsonObject, "thumb");
 		String path = CommonUtils.getJsonString(jsonObject, "path");
+		// Files in Catalog don't have a originalName
+		String originalName = jsonObject.optString( "originalName");
 
 		// fix up file extension so that Dashchan correctly derives the MIME type
-		if (path.length() >= 5 && path.charAt(path.length() - 4) != '.'
+		if (originalName != "" && path.length() >= 5 && path.charAt(path.length() - 4) != '.'
 				&& path.charAt(path.length() - 5) != '.')
 			path = path + "/" + originalName;
 
